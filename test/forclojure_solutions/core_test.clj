@@ -122,6 +122,28 @@
     )
   )
 
+;; 90: Cartesian Product
+(deftest test-cartestian-product
+  (let [func (fn [a b]
+               (set (for [x a y b] [x y])))]
+    (testing "numbers"
+      (is (= (func #{1 2 3} #{4 5})
+             #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})))))
+
+;; 107: Simple closures
+(deftest test-simple-closures
+  (let [func (fn [pow] (fn [b] (int (java.lang.Math/pow b pow))))]
+    (testing "a"
+      (is (= 256
+             ((func 2) 16),
+             ((func 8) 2))))
+    (testing "b"
+      (is (= [1 8 27 64] (map (func 3) [1 2 3 4]))))
+    (testing "c"
+      (is (= [1 2 4 8 16] (map #((func %) 2) [0 1 2 3 4]))))
+    )
+  )
+
 ;; 134: A nil key
 (def a-nil-key #(nil? (get %2 %1 false)))
 (deftest test-a-nil-key
