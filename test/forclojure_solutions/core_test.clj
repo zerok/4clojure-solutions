@@ -33,7 +33,6 @@
   (testing "first-8"
     (is (= (first-n-fib 8) '(1 1 2 3 5 8 13 21)))))
 
-
 ;; 29: Get the Caps
 (defn get-the-caps [s]
   (apply str (filter #(and (<= (int %) (int \Z)) (>= (int %) (int \A))) s)))
@@ -71,12 +70,57 @@
   (testing "2"
     (is (= 6 (some #(when (even? %) %) [5 6 7 8])))))
 
+;; 51: Advanced destructuring
+(deftest test-advanced-destructuring
+  (let [value [1 2 3 4 5]]
+    (testing "1"
+      (is (= [1 2 [3 4 5] [1 2 3 4 5]]
+             (let [[a b & c :as d] value]
+               [a b c d])
+             )))))
 
 ;; 52: Destructuring
 (deftest test-destructuring
   (testing "1"
     (is (= [2 4] (let [[a b c d e] [0 1 2 3 4]] [c e])))))
 
+
+;; 66: Greatest common divisor
+(deftest test-gcd
+  (let [gcd (fn [a b]
+              (let [range (range 1 (+ (min a b) 1))]
+                (last (filter (fn [cur] (and
+                                   (= 0 (mod a cur))
+                                   (= 0 (mod b cur)))) range))
+                ))]
+    (testing "a"
+      (is (= (gcd 2 4 ) 2)))
+    (testing "b"
+      (is (= (gcd 10 5) 5)))
+    (testing "c"
+      (is (= (gcd 5 7) 1)))
+    (testing "d"
+      (is (= (gcd 1023 858) 33)))
+    ))
+
+;; 83: A Half-Truth
+(deftest test-a-half-truth
+  (let [func (fn [& args]
+               (let [num (count args)
+                     numTrues (reduce (fn [res cur] (if (true? cur) (+ res 1) res))
+                             0
+                             args)]
+                 (if (= num numTrues)
+                   false
+                   (< 0 numTrues))))]
+    (testing "all false"
+      (is (= false (func false false))))
+    (testing "some true"
+      (is (= true (func true false))))
+    (testing "all true"
+      (is (= false (func true))))
+    )
+  )
 
 ;; 134: A nil key
 (def a-nil-key #(nil? (get %2 %1 false)))
