@@ -122,6 +122,23 @@
     )
   )
 
+;; 88: Symmetric Difference
+(deftest test-symmetric-difference
+  (let [func (fn [a b]
+               (let [intersection (clojure.set/intersection a b)
+                     union (clojure.set/union a b)]
+                 (clojure.set/difference union intersection)))]
+    (testing "a"
+      (is (= (func #{1 2 3 4 5 6} #{1 3 5 7}) #{2 4 6 7})))
+    (testing "b"
+      (is (= (func #{:a :b :c} #{}) #{:a :b :c})))
+    (testing "c"
+      (is (= (func #{} #{4 5 6}) #{4 5 6})))
+    (testing "d"
+      (is (= (func #{[1 2] [2 3]} #{[2 3] [3 4]}) #{[1 2] [3 4]})))
+    )
+  )
+
 ;; 90: Cartesian Product
 (deftest test-cartestian-product
   (let [func (fn [a b]
@@ -129,6 +146,57 @@
     (testing "numbers"
       (is (= (func #{1 2 3} #{4 5})
              #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})))))
+
+;; 97: Pascal's triangle
+(deftest test-pascals-triangle
+  (letfn [(func [num]
+            (letfn [(getValue [length pos]
+                      (if (or (= length 1) (= pos 1) (= pos length))
+                        1
+                        (+ (getValue (- length 1) (- pos 1))
+                           (getValue (- length 1) pos)
+                           )))]
+              (map (fn [v] (getValue num (+ v 1))) (range num))
+              )
+            )]
+    (testing "1"
+      (is (= (func 1) [1])))
+    (testing "3"
+      (is (= (func 3) [1 2 1])))
+    (testing "range"
+      (is (= (map func (range 1 6))
+             [    [1]
+                 [1 1]
+                [1 2 1]
+               [1 3 3 1]
+              [1 4 6 4 1]])))
+    (testing "11"
+      (is (= (func 11) [1 10 45 120 210 252 210 120 45 10 1])))
+    )
+  )
+
+;; 100: Least common multiple
+;; Solution on https://github.com/jamiltron/4clojure-solutions/blob/master/solutions.clj
+(deftest test-least-common-multiple
+  (let [func (fn [& nums]
+               (let [gcd (fn [a b]
+                           (if (= b 0)
+                             a
+                             (recur b (rem a b))))]
+                 (reduce #(/ (* %1 %2) (gcd %1 %2)) nums))
+               )]
+    (testing "a"
+      (is (== (func 2 3) 6)))
+    (testing "b"
+      (is (== (func 5 3 7) 105)))
+    (testing "c"
+      (is (== (func 1/3 2/5) 2)))
+    (testing "d"
+      (is (== (func 3/4 1/6) 3/2)))
+    (testing "e"
+      (is (== (func 7 5/7 2 3/5) 210)))
+    )
+  )
 
 ;; 107: Simple closures
 (deftest test-simple-closures
